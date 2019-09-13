@@ -1,0 +1,198 @@
+%!TeX program = pdflatex
+%!BIB program = biber
+
+\documentclass[serbian]{beamer}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage{babel}
+\mode<presentation>
+{
+  \usetheme{default}      % or try Boadilla, Rochester, ...
+  \usecolortheme{default} % or try beaver, dove, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+\usepackage[style=numeric]{biblatex}
+\addbibresource{serbian.bib}
+\setbeamertemplate{bibliography item}[triangle]
+
+% This is for slide numbering
+\setbeamertemplate{sidebar right}{}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamertemplate***{navigation symbols}
+	\large\insertframenumber{}/\inserttotalframenumber\hspace{0.5cm}\vspace{0.2cm}
+}
+
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily\small,
+	columns=fullflexible,
+	keepspaces=true,
+	showstringspaces=false,
+	escapechar=\%,
+	tabsize=4
+}
+
+\usepackage{amsmath}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\title[Jakobijev algoritam za pronalaženje sopstvenih vrednosti]{Jakobijev algoritam za pronalaženje sopstvenih vrednosti}
+\author{Isidora Đurđević}
+\institute{Matematički fakultet, \\ Univerzitet u Beogradu}
+\date{\today.}
+
+\begin{document}
+
+\begin{frame}
+  	\titlepage
+\end{frame}
+
+\begin{frame}{Sadr\v zaj}
+  	\tableofcontents
+\end{frame}
+
+\section{Uvod}
+
+\begin{frame}{Uvod}
+
+\begin{itemize}
+	\item Jakobijev algoritam je iterativna metoda za pronalaženje sopstvenih vrednosti i sopstvenih vektora matrice
+	\item Naziv je dobio po matematičaru Gustav Karl Jakobiju
+	\item Poznat kao proces dijagonalizacije
+\end{itemize}
+
+\end{frame}
+
+\section{Jakobijev algoritam}
+
+\begin{frame}{Jakobijev algoritam}
+
+\begin{itemize}
+	\item Rešenje je garantovano za realne i simetrične matrice
+	\item Zasniva se na iterativnoj primeni matrica rotacija kako bi se anulirali elementi van dijagonale
+	\item Rotacije se zovu Jakobijeve ili Givensove rotacije
+	\item Rezultat je dijagonalna matrica na čijoj dijagonali se nalaze sopstvene vrednosti
+	\item Proizvodom primenjenih matrica rotacija dobija se matrica čije kolone čine sopstvene vektore
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Jakobijev algoritam (2)}
+
+\begin{itemize}
+	\item Neka je \texttt{S} simetrična matrica, i \texttt{G = G(i, j, $\theta$)} Givensova matrica rotacije. Tada je:
+\end{itemize}
+
+	 \begin{center}
+ 		\texttt{S' = GS$G^{T}$} \\
+ 	\end{center}
+	
+\begin{itemize}
+	\item simetrična matrica i slična je matrici \texttt{S}
+	\item matrica \texttt{S'} se izračunava sledećim formulama:
+\end{itemize}
+
+	\begin{center}
+ 		\texttt{$S'_{ii}$ = $c^2S_{ii} - 2scS_{ij} + s^2S_{jj}$} \\
+		\texttt{$S'_{jj}$ = $s^2S_{ii} - 2scS_{ij} + c^2S_{jj}$} \\
+		\texttt{$S'_{ij}$ = $S'_{ji}$ = $(c^2 - s^2)S_{ij} + sc(S_{ii} - S_{jj})$} \\
+		\texttt{$S'_{ik}$ = $S'_{ki}$ = $cS_{ik} - sS_{jk}$} \tab[1cm] k $\neq$ i, j \\
+		\texttt{$S'_{jk}$ = $S'_{kj}$ = $sS_{ik} - cS_{jk}$} \tab[1cm] k $\neq$ i, j  \\
+		\texttt{$S'_{kl}$ = $S_{kl}$} \tab[3cm] k, l $\neq$ i, j  
+ 	\end{center}
+
+\end{frame}
+
+\begin{frame}{Jakobijev algoritam (3)}
+
+\begin{itemize}
+	\item Gde je \texttt{s = sin($\theta$)} i \texttt{c = cos($\theta$)}
+	\item Pošto je \texttt{G} ortogonalna matrica, \texttt{S} i \texttt{S'} imaju istu normu
+	\item Ako izaberemo $\theta$ tako da je \texttt{$S'_{ij}$ = 0} tada je \texttt{S'}:
+\end{itemize}
+
+	\begin{equation}
+		S'_{ij} = cos(2\theta)S_{ij} + \dfrac{1}{2}sin(2\theta)(S_{ii} - S_{jj})
+	\end{equation}
+
+\end{frame}
+
+\begin{frame}{Jakobijev algoritam (4)}
+
+	\begin{itemize}
+		\item Izjednačavanjem prethodne formule na 0 i sređivanjem dobijamo:
+	\end{itemize}
+	
+	\begin{equation}
+		tan(2\theta) = \dfrac{2S_{ij}}{S_{jj} - S_{ii}}
+	\end{equation}
+	
+	\begin{itemize}
+		\item $S_{ij}$ je pivot i predstavlja najveći vandijagonalni element
+		\item Matrica rotacije:
+	\end{itemize}
+	
+	\[\begin{bmatrix}
+    			cos\theta & sin\theta  \\
+   			-sin\theta   &  cos\theta  \\
+	\end{bmatrix}\]
+	
+\end{frame}
+
+\section{Jakobijev algoritam - koraci}
+
+\begin{frame}{Jakobijev algoritam - koraci}
+
+\begin{itemize}
+	\item Pronađi najveći vandijagonalni element
+	\item Ukoliko je najveći vandijagonalni element manji od unapred definisane vrednosti $\varepsilon$ - \texttt{break} -
+	\item Inače izvrši rotaciju tako da se anulira najveći vandijagonalni element
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ocena slo\v zenosti}
+
+\begin{itemize}
+	\item Složenost rotacije je \texttt{O(n)} ukoliko je poznat najveći vandijagonalni element, inače \texttt{O($n^2$)}
+	\item Moguće je svesti na \texttt{O(n)} ukoliko se čuva niz sa vrednostima vandijagonalnih elemenata, gde je \texttt{i}-ti element niza najveći element u \texttt{i}-tom redu matrice
+	\item Rotacija predstavlja množenje matrica i složenost je \texttt{O($n^3$)}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+\vspace*{3em}
+
+{\Large Hvala na pa\v znji!} 
+
+\vspace*{1em}
+
+Pitanja?
+
+\end{frame}
+
+\section{Dodatak}
+
+\begin{frame}{Dodatak}
+
+\begin{flushleft}
+	{\Large Literatura}
+\end{flushleft}
+
+\nocite{NumOpt}
+
+\printbibliography
+
+\begin{flushleft}
+	{\Large Repozitorijum}
+\end{flushleft}
+
+\href{https://github.com/i-djurdjevic/NIZ-2018}{https://github.com/i-djurdjevic/NIZ-2018}
+
+\end{frame}
+
+\end{document}
