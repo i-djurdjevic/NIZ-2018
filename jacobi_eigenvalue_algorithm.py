@@ -1,6 +1,5 @@
-from numpy import array, identity, diagonal
+from numpy import array, identity, diagonal, zeros
 from math import sqrt
-
 
 # *****************************************************************************
 #   Jakobijev algoritam za pronalazenje sopstvenih vrednosti matrica.
@@ -15,6 +14,12 @@ from math import sqrt
 #     - p - matrica koja sadrzi sopstvene vektore matrice
 #     - it_num - ukupan broj iteracija
 # *****************************************************************************
+
+def print_results(eigenvalues, eigenvectors, num_of_it):
+    print('Eigenvalues:', eigenvalues)
+    print('Eigenvectors:', eigenvectors)
+    print('Total number of rotations:', num_of_it)
+    print('\n')
 
 def jacobi_eigenvalue_algorithm(a, n, max_iter):
 
@@ -109,5 +114,36 @@ def jacobi_eigenvalue_algorithm(a, n, max_iter):
 
     print('Metoda nije konvergirala')
 
-print(jacobi_eigenvalue_algorithm(
-    array([[4, -30, 60, -35], [-30, 300, -675, 420], [60, -675, 1620, -1050], [-35, 420, -1050, 700]]), 4, 100))
+# Tests:
+
+eigenvalues, eigenvectors, num_of_it = jacobi_eigenvalue_algorithm(
+    array([\
+        [4, -30, 60, -35], \
+        [-30, 300, -675, 420], \
+        [60, -675, 1620, -1050], \
+        [-35, 420, -1050, 700]]), 4, 100)
+
+print_results(eigenvalues, eigenvectors, num_of_it)
+
+eigenvalues, eigenvectors, num_of_it = jacobi_eigenvalue_algorithm(array([ \
+    [ 4.0, 0.0, 0.0, 0.0 ], \
+    [ 0.0, 1.0, 0.0, 0.0 ], \
+    [ 0.0, 0.0, 3.0, 0.0 ], \
+    [ 0.0, 0.0, 0.0, 2.0 ] ] ), 4, 100)
+
+print_results(eigenvalues, eigenvectors, num_of_it)
+
+n = 5
+a = zeros([n, n])
+for j in range ( 0, n ):
+    for i in range ( 0, n ):
+        if ( i == j ):
+            a[i,j] = -2.0
+        elif ( i == j + 1 or i == j - 1 ):
+            a[i,j] = 1.0
+
+
+eigenvalues, eigenvectors, num_of_it = jacobi_eigenvalue_algorithm(a, n, 100)
+
+print_results(eigenvalues, eigenvectors, num_of_it)
+
